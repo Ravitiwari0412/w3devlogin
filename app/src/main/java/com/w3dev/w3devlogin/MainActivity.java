@@ -25,23 +25,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends Activity {
-    private static final String API_KEY = "77samz4zvzm0w8";
-    private static final String SECRET_KEY = "YOU_SECRET_KEY_HERE";
-    private static final String STATE = "E3ZYKC1T6H2yP4z";
-    private static final String REDIRECT_URI = "http://co.uk.manifesto.linkedinauthexample.redirecturl";
-    private static final String AUTHORIZATION_URL = "https://www.linkedin.com/uas/oauth2/authorization";
-    private static final String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth2/accessToken";
+    private static final String API_KEY = "1729786746660237";
+    private static final String SECRET_KEY = "GXpqf31Rs8ofodRiQZqZX79QgJiF2Dyw47sj3RH1";
+   // private static final String STATE = "E3ZYKC1T6H2yP4z";
+    private static final String REDIRECT_URI = "http://localhost";
+    private static final String AUTHORIZATION_URL = "https://accounts.studentgiri.com/authorize/";
+    private static final String ACCESS_TOKEN_URL = "https://accounts.studentgiri.com/token/";
     private static final String SECRET_KEY_PARAM = "client_secret";
     private static final String RESPONSE_TYPE_PARAM = "response_type";
     private static final String GRANT_TYPE_PARAM = "grant_type";
     private static final String GRANT_TYPE = "authorization_code";
     private static final String RESPONSE_TYPE_VALUE = "code";
-    private static final String CLIENT_ID_PARAM = "1729786746660237";
+    private static final String CLIENT_ID_PARAM = "client_id";
     private static final String STATE_PARAM = "state";
     private static final String REDIRECT_URI_PARAM = "redirect_uri";
     private static final String QUESTION_MARK = "?";
     private static final String AMPERSAND = "&";
     private static final String EQUALS = "=";
+
     private WebView webView;
     private ProgressDialog pd;
 
@@ -63,16 +64,20 @@ public class MainActivity extends Activity {
             }
 
             public boolean shouldOverrideUrlLoading(WebView view, String authorizationUrl) {
-                if(authorizationUrl.startsWith("https://accounts.studentgiri.com/authorize/?")) {
+                if(authorizationUrl.startsWith(REDIRECT_URI)) {
                     Log.i("Authorize", "");
                     Uri uri = Uri.parse(authorizationUrl);
+//                    Intent intent = new Intent(getApplicationContext(),RedirectActivity.class);
+//                    startActivity(intent);
+//                    intent.putExtra("url",uri);
+                 //   return true;
 //                    String stateToken = uri.getQueryParameter("state");
 //                    if(stateToken == null || !stateToken.equals("E3ZYKC1T6H2yP4z")) {
 //                        Log.e("Authorize", "State token doesn't match");
 //                        return true;
 //                    }
 
-                    String authorizationToken = uri.getQueryParameter(RESPONSE_TYPE_PARAM);
+                    String authorizationToken = uri.getQueryParameter(RESPONSE_TYPE_VALUE);
                     if(authorizationToken == null) {
                         Log.i("Authorize", "The user doesn't allow authorization.");
                         return true;
@@ -94,15 +99,46 @@ public class MainActivity extends Activity {
         String authUrl = getAuthorizationUrl();
         Log.i("Authorize", "Loading Auth Url: " + authUrl);
         this.webView.loadUrl(authUrl);
+
     }
 
-    private static String getAccessTokenUrl(String authorizationToken) {
-        return "https://accounts.studentgiri.com/token/?grant_type=authorization_code&code=" + authorizationToken + "&" + "client_id" + "=" + "1729786746660237" + "&" + "redirect_uri" + "=" + "http://localhost" + "&" + "client_secret" + "=" + "GXpqf31Rs8ofodRiQZqZX79QgJiF2Dyw47sj3RH1";
+
+    /**
+     * Method that generates the url for get the access token from the Service
+     * @return Url
+     */
+    private static String getAccessTokenUrl(String authorizationToken){
+        return ACCESS_TOKEN_URL
+                +QUESTION_MARK
+                +GRANT_TYPE_PARAM+EQUALS+GRANT_TYPE
+                +AMPERSAND
+                +RESPONSE_TYPE_VALUE+EQUALS+authorizationToken
+                +AMPERSAND
+                +CLIENT_ID_PARAM+EQUALS+API_KEY
+                +AMPERSAND
+                +REDIRECT_URI_PARAM+EQUALS+REDIRECT_URI
+                +AMPERSAND
+                +SECRET_KEY_PARAM+EQUALS+SECRET_KEY;
+    }
+    /**
+     * Method that generates the url for get the authorization token from the Service
+     * @return Url
+     */
+    private static String getAuthorizationUrl(){
+        return AUTHORIZATION_URL
+                +QUESTION_MARK+RESPONSE_TYPE_PARAM+EQUALS+RESPONSE_TYPE_VALUE
+                +AMPERSAND+CLIENT_ID_PARAM+EQUALS+API_KEY
+
+                +AMPERSAND+REDIRECT_URI_PARAM+EQUALS+REDIRECT_URI;
     }
 
-    private static String getAuthorizationUrl() {
-        return "https://accounts.studentgiri.com/authorize/?response_type=code&client_id=1729786746660237&redirect_uri=http://localhost";
-    }
+//    private static String getAccessTokenUrl(String authorizationToken) {
+//        return "https://accounts.studentgiri.com/token/?grant_type=authorization_code&code=" + authorizationToken + "&" + "client_id" + "=" + "1729786746660237" + "&" + "redirect_uri" + "=" + "http://localhost" + "&" + "client_secret" + "=" + "GXpqf31Rs8ofodRiQZqZX79QgJiF2Dyw47sj3RH1";
+//    }
+
+//    private static String getAuthorizationUrl() {
+//        return "https://accounts.studentgiri.com/authorize/?response_type=code&client_id=1729786746660237&redirect_uri=http://localhost";
+//    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         this.getMenuInflater().inflate(R.menu.main, menu);

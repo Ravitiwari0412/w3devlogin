@@ -17,15 +17,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProfileActivity extends Activity {
-    private static final String PROFILE_URL = "https://api.linkedin.com/v1/people/~";
+    private static final String PROFILE_URL = "https://accounts.studentgiri.com/v1.0/me/";
     private static final String OAUTH_ACCESS_TOKEN_PARAM = "oauth2_access_token";
     private static final String QUESTION_MARK = "?";
     private static final String EQUALS = "=";
     private TextView welcomeText;
     private ProgressDialog pd;
 
-    public ProfileActivity() {
-    }
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +41,9 @@ public class ProfileActivity extends Activity {
     }
 
     private static final String getProfileUrl(String accessToken) {
-        return "https://api.linkedin.com/v1/people/~?oauth2_access_token=" + accessToken;
+        return  PROFILE_URL
+                +QUESTION_MARK
+                +OAUTH_ACCESS_TOKEN_PARAM+EQUALS+accessToken;
     }
 
     private class GetProfileRequestAsyncTask extends AsyncTask<String, Void, JSONObject> {
@@ -50,7 +51,7 @@ public class ProfileActivity extends Activity {
         }
 
         protected void onPreExecute() {
-            ProfileActivity.this.pd = ProgressDialog.show(ProfileActivity.this, "", ProfileActivity.this.getString(2131034114), true);
+            ProfileActivity.this.pd = ProgressDialog.show(ProfileActivity.this, "", ProfileActivity.this.getString(R.string.welcome_text), true);
         }
 
         protected JSONObject doInBackground(String... urls) {
